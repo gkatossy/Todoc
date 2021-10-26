@@ -3,6 +3,11 @@ package com.cleanup.todoc.model;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 import java.util.Comparator;
 
@@ -11,15 +16,29 @@ import java.util.Comparator;
  *
  * @author Gaëtan HERFRAY
  */
+
+// Bringing Room into the game
+@Entity(tableName = "task_table",
+    foreignKeys = @ForeignKey(
+        entity = Project.class,
+        parentColumns = "id",
+        childColumns = "projectId",
+        onDelete = ForeignKey.CASCADE),
+    indices = @Index("projectId")
+)
 public class Task {
     /**
      * The unique identifier of the task
      */
+
+    @PrimaryKey(autoGenerate = true)
     private long id;
 
     /**
      * The unique identifier of the project associated to the task
      */
+
+    @ColumnInfo(name = "projectId")
     private long projectId;
 
     /**
@@ -28,11 +47,14 @@ public class Task {
     // Suppress warning because setName is called in constructor
     @SuppressWarnings("NullableProblems")
     @NonNull
+    @ColumnInfo(name = "name")
     private String name;
 
     /**
      * The timestamp when the task has been created
      */
+
+    @ColumnInfo(name = "creationTimestamp")
     private long creationTimestamp;
 
     /**

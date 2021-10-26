@@ -4,28 +4,36 @@ package com.cleanup.todoc.model;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  * <p>Models for project in which tasks are included.</p>
  *
  * @author Gaëtan HERFRAY
  */
+// Bringing Room into the game
+@Entity(tableName = "project_table")
 public class Project {
     /**
      * The unique identifier of the project
      */
+    @PrimaryKey(autoGenerate = true)
     private final long id;
 
     /**
      * The name of the project
      */
     @NonNull
+    @ColumnInfo(name = "projectName")
     private final String name;
 
     /**
      * The hex (ARGB) code of the color associated to the project
      */
     @ColorInt
+    @ColumnInfo(name = "projectColor")
     private final int color;
 
     /**
