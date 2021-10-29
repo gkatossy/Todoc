@@ -39,7 +39,7 @@ public class Task {
      */
 
     @ColumnInfo(name = "projectId")
-    private long projectId;
+    public long projectId;
 
     /**
      * The name of the task
@@ -55,7 +55,7 @@ public class Task {
      */
 
     @ColumnInfo(name = "creationTimestamp")
-    private long creationTimestamp;
+    public long creationTimestamp;
 
     /**
      * Instantiates a new Task.

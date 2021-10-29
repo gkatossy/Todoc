@@ -15,12 +15,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cleanup.todoc.R;
+import com.cleanup.todoc.injection.Injection;
+import com.cleanup.todoc.injection.ViewModelFactory;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.repository.TaskViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,14 +93,29 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
+    private TaskViewModel taskViewModel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
+        /*taskViewModel = new ViewModelProvider.AndroidViewModelFactory(MainActivity.this
+                .getApplication())
+                .create(TaskViewModel.class);
+        taskViewModel.getTasks().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                Log.d("TAGGED", "onCreate: " + tasks.get(0).getName());
+            }
+        });*/
+
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
+
+        this.configureViewModel();
+
 
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
@@ -108,6 +127,17 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
         });
     }
+    // Add TaskViewModel here
+
+    /**
+     * Init the ViewModel
+     */
+    public void configureViewModel(){
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(getApplication());
+        this.taskViewModel =  new ViewModelProvider(this, viewModelFactory).get(TaskViewModel.class);
+        this.taskViewModel.init();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -183,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogInterface.dismiss();
             }
         }
-        // If dialog is aloready closed
+        // If dialog is already closed
         else {
             dialogInterface.dismiss();
         }
