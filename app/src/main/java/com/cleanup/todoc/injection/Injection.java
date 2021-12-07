@@ -4,8 +4,7 @@ import android.app.Application;
 
 import com.cleanup.todoc.repository.ProjectRepository;
 import com.cleanup.todoc.repository.TaskRepository;
-import com.cleanup.todoc.ui.MainActivity;
-import com.cleanup.todoc.util.CleanupRoomDatabase;
+import com.cleanup.todoc.data.CleanupRoomDatabase;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

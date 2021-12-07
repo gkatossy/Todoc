@@ -29,6 +29,7 @@ import com.cleanup.todoc.repository.TaskViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all projects available in the application
      */
-    private final Project[] allProjects = Project.getAllProjects();
+    private Project[] allProjects = Project.getAllProjects();
 
     /**
      * List of all current tasks of the application
@@ -101,16 +102,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         setContentView(R.layout.activity_main);
 
-        /*taskViewModel = new ViewModelProvider.AndroidViewModelFactory(MainActivity.this
-                .getApplication())
-                .create(TaskViewModel.class);
-        taskViewModel.getTasks().observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(List<Task> tasks) {
-                Log.d("TAGGED", "onCreate: " + tasks.get(0).getName());
-            }
-        });*/
-
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
@@ -125,7 +116,12 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             public void onClick(View view) {
                 showAddTaskDialog();
             }
+
         });
+
+        configureViewModel();
+        getProjects();
+        getTasks();
     }
     // Add TaskViewModel here
 
@@ -137,6 +133,14 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         this.taskViewModel =  new ViewModelProvider(this, viewModelFactory).get(TaskViewModel.class);
         this.taskViewModel.init();
     }
+
+    private void getProjects() {
+        taskViewModel.getAllProjects().observe(this, this::updateProjects);
+    }
+
+    private void updateProjects(List<Project> projects) { allProjects = projects.toArray(new Project[0]); }
+
+    private void getTasks() { taskViewModel.allTasks().observe(this, this::updateTasks); }
 
 
     @Override
@@ -159,15 +163,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             sortMethod = SortMethod.RECENT_FIRST;
         }
 
-        updateTasks();
-
+        getTasks();
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
-        updateTasks();
+        taskViewModel.delete(task);
     }
 
     /**
@@ -239,14 +241,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        tasks.add(task);
-        updateTasks();
+        taskViewModel.insert(task);
     }
 
     /**
      * Updates the list of tasks in the UI
      */
-    private void updateTasks() {
+    private void updateTasks(List<Task> tasks) {
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);

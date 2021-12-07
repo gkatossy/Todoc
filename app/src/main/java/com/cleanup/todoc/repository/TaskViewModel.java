@@ -33,14 +33,14 @@ public class TaskViewModel extends ViewModel {
         if (this.currentProjects != null) {
             return;
         }
-        currentProjects = projectRepository.allProjects();
+        currentProjects = projectRepository.getProjects();
     }
-    // FOR PROJECTS
+
     public LiveData<List<Project>> getAllProjects(){
         return this.currentProjects;
     }
 
-    // FOR TASKS
+
     public LiveData<List<Task>> allTasks(){
         return taskRepository.getTasks();
     }
@@ -48,12 +48,6 @@ public class TaskViewModel extends ViewModel {
     public void insert(Task task){
         executor.execute(()->{
             taskRepository.insert(task);
-        });
-    }
-
-    public void update(Task task){
-        executor.execute(()->{
-            taskRepository.update(task);
         });
     }
 
